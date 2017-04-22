@@ -17,9 +17,16 @@ public:
 	
 	~interpreter();
 
-	bool parse(QJsonDocument File);
+	interpreter interpreter::fromJSON(QString File);
 
+	interpreter & interpreter::operator=(const interpreter& s);
+	
+	bool interpreter::shapeParse(QJsonValue ShpArray);
 
+private:
+	camera Cam;
+	lights Light;
+	std::vector<shapes> ShapeList;
 };
 
 
