@@ -6,13 +6,10 @@
 #include <QJsonObject>
 #include <QString>
 #include <vector>
-
+#include <iostream>
 
 class shapes {
 public:
-	shapes();
-	shapes(std::string version, QJsonObject middle, QJsonObject rgb,double rad, double lamb);
-	shapes(std::string version, QJsonObject middle, QJsonObject norm, QJsonObject rgb, double lamb);
 	struct loc {
 		double x;
 		double y;
@@ -31,6 +28,12 @@ public:
 		double lambert;
 		RGB color;
 	};
+	
+	shapes();
+	shapes(std::string version, QJsonObject middle, QJsonObject rgb,double rad, double lamb);
+	shapes(std::string version, QJsonObject middle, QJsonObject norm, QJsonObject rgb, double lamb);
+	
+	obj Shps;
 };
 
 

@@ -5,11 +5,10 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <vector>
+#include <iostream>
 
 class lights {
 public:
-	lights();
-	lights(double intense, QJsonObject locate);
 	struct loc {
 		double x;
 		double y;
@@ -19,6 +18,11 @@ public:
 		double intensity;
 		loc location;
 	};
+	LightSources lite;
+	lights();
+	lights(double intense, QJsonObject locate);
+	
+
 
 };
 

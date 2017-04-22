@@ -1,43 +1,56 @@
 #include <thread>
-#include <iostream>
 #include <string>
 #include <interpreter.h>
-
-
-void parse(std::string jasonIN);
 
 // implement vtray main here
 
 int main(int argv, char * argc[])
 {
 	int numThreads;
-	std::string inFile;
-	if (argv == 4)
+	int exit;
+	interpreter interp;
+	QString inFile;
+	QString tds;
+	exit = EXIT_SUCCESS;
+	if (argv == 5)
 	{
-		if (argc[0] == "-t")
+		std::cout << "multithreaded thingy" << std::endl;
+		if (argc[1] == "-t")
 		{
-			parse(inFile);
+			
+			inFile = argc[3];
+			tds = argc[2];
+			numThreads = tds.toInt();
+			try {
+				interp = interp.fromJSON(inFile);
+			}
+			catch (QJsonParseError & error)	{
+				exit = EXIT_FAILURE;
+			}
 		}
 		else
 		{
 			std::cerr << "Error : Incorrect input arguments" << std::endl;
-			return EXIT_FAILURE;
+			exit =  EXIT_FAILURE;
 		}
 	}
-	else if (argv == 2)
+	else if (argv == 3)
 	{
-		parse(inFile);
+		std::cout << "just json and output file" << std::endl;
+		inFile = argc[1];
+		try {
+			interp = interp.fromJSON(inFile);
+		}
+		catch (QJsonParseError & error)	{
+			exit = EXIT_FAILURE;
+		}
 	}
 	else
 	{
-		std::cerr << "Error : Incorrect input arguments" << std::endl;
-		return EXIT_FAILURE;
+		std::cerr << "Error : Incorrect number of input arguments" << std::endl;
+		exit =  EXIT_FAILURE;
 	}
-	return EXIT_SUCCESS;
-}
-
-void parse(std::string jasonIN) {
-	std::cout << "le parse" << std::endl;
+	return exit;
 }
 
 

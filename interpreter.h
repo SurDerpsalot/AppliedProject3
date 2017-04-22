@@ -8,14 +8,12 @@
 #include <camera.h>
 #include <lights.h>
 #include <shapes.h>
-
+#include <QFile>
 
 class interpreter {
 public:
 	
 	interpreter();
-	
-	~interpreter();
 
 	interpreter interpreter::fromJSON(QString File);
 
@@ -25,8 +23,9 @@ public:
 	bool interpreter::lightParse(QJsonValue LghtArray);
 	bool interpreter::cameraParse(QJsonValue CamJect);
 
-private:
-	camera Cam;
+	void interpreter::Eval(QString File);
+
+	camera Cams;
 	std::vector<shapes> ShapeList;
 	std::vector<lights> LightList;
 };

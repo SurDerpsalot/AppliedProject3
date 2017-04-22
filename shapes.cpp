@@ -2,7 +2,6 @@
 
 shapes::shapes()
 {
-	obj Shps;
 	Shps.center.x = 0;
 	Shps.center.y = 0;
 	Shps.center.z = 0;
@@ -18,7 +17,6 @@ shapes::shapes()
 }
 
 shapes::shapes(std::string version, QJsonObject middle, QJsonObject rgb, double rad, double lamb) {
-	obj Shps;
 	Shps.center.x = middle["x"].toDouble();
 	Shps.center.y = middle["y"].toDouble();
 	Shps.center.z = middle["z"].toDouble();
@@ -34,7 +32,6 @@ shapes::shapes(std::string version, QJsonObject middle, QJsonObject rgb, double 
 }
 
 shapes::shapes(std::string version, QJsonObject middle, QJsonObject norm, QJsonObject rgb, double lamb) {
-	obj Shps;
 	Shps.center.x = middle["x"].toDouble();
 	Shps.center.y = middle["y"].toDouble();
 	Shps.center.z = middle["z"].toDouble();

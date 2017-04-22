@@ -6,11 +6,12 @@
 #include <QJsonObject>
 #include <QString>
 #include <array>
+#include <iostream>
+
+
 
 class camera {
 public:
-	camera();
-	camera(QJsonObject middle, QJsonObject norm, double foc, QJsonArray sz, QJsonArray res);
 	struct loc {
 		double x;
 		double y;
@@ -23,6 +24,9 @@ public:
 		std::array<int, 2> size;
 		std::array<double, 2>	resolution;
 	};
+	camera();
+	camera(QJsonObject middle, QJsonObject norm, double foc, QJsonArray sz, QJsonArray res);
+	cam CamStruct;
 
 };
 
