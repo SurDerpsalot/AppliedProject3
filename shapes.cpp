@@ -13,7 +13,7 @@ shapes::shapes()
 	Shps.normal.x = 0;
 	Shps.normal.y = 0;
 	Shps.normal.z = 0;
-	Shps.plane = 0;
+	Shps.type = "neither";
 	Shps.radius = 0;
 }
 
@@ -47,11 +47,4 @@ shapes::shapes(std::string version, QJsonObject middle, QJsonObject norm, QJsonO
 	Shps.normal.z = norm["z"].toDouble();
 	Shps.type = version;
 	Shps.radius = 0;
-}
-
-
-
-
-shapes::~shapes() {
-
 }

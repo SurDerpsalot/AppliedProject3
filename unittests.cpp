@@ -5,7 +5,7 @@
 // IMPORTANT NOTE:
 // These are just a few examples from my solution and **should be removed**.
 // Depending on your code design your class and functions names would differ
-
+/*
 #include "geometry.hpp"
 
 TEST_CASE( "Test Basic Geometry: Vec3d ", "[geometry]" ) {
@@ -33,3 +33,4 @@ TEST_CASE( "Test Basic Geometry: Vec3d ", "[geometry]" ) {
   REQUIRE(bnorm.y == Approx(1));
   REQUIRE(bnorm.z == Approx(0));
 }
+*/

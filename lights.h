@@ -9,17 +9,16 @@
 class lights {
 public:
 	lights();
-	~lights();
+	lights(double intense, QJsonObject locate);
 	struct loc {
 		double x;
 		double y;
-		double x;
+		double z;
 	};
 	struct LightSources {
 		double intensity;
 		loc location;
 	};
-	std::vector<LightSources> LightList;
 
 };
 

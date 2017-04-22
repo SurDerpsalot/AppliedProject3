@@ -7,12 +7,10 @@
 #include <QString>
 #include <array>
 
-
-
 class camera {
 public:
 	camera();
-	~camera();
+	camera(QJsonObject middle, QJsonObject norm, double foc, QJsonArray sz, QJsonArray res);
 	struct loc {
 		double x;
 		double y;
@@ -27,7 +25,6 @@ public:
 	};
 
 };
-
 
 #endif // !CAMERA_H
 

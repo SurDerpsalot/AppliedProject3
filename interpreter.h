@@ -22,11 +22,13 @@ public:
 	interpreter & interpreter::operator=(const interpreter& s);
 	
 	bool interpreter::shapeParse(QJsonValue ShpArray);
+	bool interpreter::lightParse(QJsonValue LghtArray);
+	bool interpreter::cameraParse(QJsonValue CamJect);
 
 private:
 	camera Cam;
-	lights Light;
 	std::vector<shapes> ShapeList;
+	std::vector<lights> LightList;
 };
 
 
