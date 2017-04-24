@@ -15,7 +15,6 @@ interpreter interpreter::fromJSON(QString File) {
 	file.close();
 	QJsonDocument jsonDoc = QJsonDocument::fromJson(json.toUtf8(), &error);
 	interpreter newinterpreter;
-	std::cout << "created a new interpreter with nothing" << std::endl;
 	if (error.error != QJsonParseError::NoError) {
 		std::cerr << "Error : Input file could not be parsed as a JSON" << std::endl;
 		throw error;
@@ -23,31 +22,28 @@ interpreter interpreter::fromJSON(QString File) {
 	QJsonObject obj = jsonDoc.object();
 	QJsonObject parser;
 	QJsonValue camra = obj["camera"];
-	if (camra.isObject())
-	{
-		std::cout << "got to camera" << std::endl;
+	if (camra.isObject())	{
 		try { cameraParse(camra); }
 		catch (QJsonParseError & error) { throw error; }
 		newinterpreter.Cams = Cams;
 		
 	}
 	QJsonValue lites = obj["lights"];
-	if (lites.isArray())
-	{
-		std::cout << "got to lights" << std::endl;
+	if (lites.isArray())	{
 		try { lightParse(lites); }
 		catch (QJsonParseError & error) { throw error;}
 		newinterpreter.LightList = LightList;
 	}
 	QJsonValue shpes = obj["objects"];
-	if (shpes.isArray())
-	{
-		std::cout << "got to shapes" << std::endl;
+	if (shpes.isArray())	{
 		try { shapeParse(shpes); }
 		catch (QJsonParseError & error) { throw error; }
 		newinterpreter.ShapeList = ShapeList;
 	}
-	std::cout << "finished parsing" << std::endl;
+	if (!camra.isObject() || !lites.isArray() || !shpes.isArray()){
+		std::cerr << "Error : Camera, lights, or shapes are using incorrect format. " << std::endl;
+		throw error;
+	}
 	return newinterpreter;
 }
 
@@ -55,18 +51,14 @@ bool interpreter::lightParse(QJsonValue lghtArray) {
 	QJsonArray parser2 = lghtArray.toArray();
 	QJsonParseError error;
 	int x = 0;
-	for (QJsonValue LightData : parser2)
-	{
-		std::cout << "times through the Light Loop: " << x << std::endl;
+	for (QJsonValue LightData : parser2){
 		QJsonObject LightObjs = LightData.toObject();
 		QJsonObject locate = LightObjs["location"].toObject();
-		if (!locate["x"].isDouble() || !locate["y"].isDouble() || !locate["z"].isDouble())
-		{
+		if (!locate["x"].isDouble() || !locate["y"].isDouble() || !locate["z"].isDouble()){
 			std::cerr << "Error : the light location is not using doubles" << std::endl;
 		}
 		double intense = LightObjs["intensity"].toDouble();
-		if (intense < 0)
-		{
+		if (intense < 0)	{
 			std::cerr << "Error : The light intensity is negative" << std::endl;
 			throw error;
 		}
@@ -82,7 +74,6 @@ bool interpreter::shapeParse(QJsonValue ShpArray) {
 	QJsonParseError error;
 	int x = 0;
 	for (QJsonValue ShapesData : parser3)	{
-		std::cout << "times through the shapes loop: " << x << std::endl;
 		QJsonObject ShapeObjs = ShapesData.toObject();
 		QString type = ShapeObjs["type"].toString();
 		QJsonObject center = ShapeObjs["center"].toObject();
@@ -98,22 +89,18 @@ bool interpreter::shapeParse(QJsonValue ShpArray) {
 		QJsonObject normal = ShapeObjs["normal"].toObject();
 		double radius = ShapeObjs["radius"].toDouble();
 		QJsonObject rgb = ShapeObjs["color"].toObject();
-		if (0<=rgb["x"].toDouble() <=255 || 0 <= rgb["y"].toDouble()<= 255 || 0<= rgb["z"].isDouble()<=255)	{
+		if ((0<= rgb["x"].toDouble() <= 255 )|| (0 <= rgb["y"].toDouble()<= 255 )||( 0<= rgb["z"].toDouble()<=255))	{
 			if (type == "sphere") {
-				std::cout << "its a sphere!" << std::endl;
 				std::string version = type.toStdString();
 				if (radius < 0) {
 					std::cerr << "Error : The radius is a negative number" << std::endl;
 					throw error;
 				}
-				std::cout << version << std::endl;
 				shapes round(version, center, rgb, radius, lambert);
 				ShapeList.push_back(round);
 			}
 			else if (type == "plane") {
-				std::cout << "its a plane!" << std::endl;
 				std::string version = type.toStdString();
-				std::cout << version << std::endl;
 				if (!normal["x"].isDouble() || !normal["y"].isDouble() || !normal["z"].isDouble()) {
 					std::cerr << "Error : Normal Coordinates are not doubles" << std::endl;
 					throw error;
@@ -159,7 +146,6 @@ bool interpreter::cameraParse(QJsonValue CamJect) {
 		std::cerr << "Error : Resolution are not doubles" << std::endl;
 	}
 	camera Camera(Center,Normal,focus,Size,Resolution);
-	std::cout << "inside the cameraParse" << std::endl;
 	Cams = Camera;
 	return true;
 }
