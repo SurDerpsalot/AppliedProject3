@@ -23,11 +23,12 @@ public:
 	bool interpreter::lightParse(QJsonValue LghtArray);
 	bool interpreter::cameraParse(QJsonValue CamJect);
 
-	void interpreter::Eval(QString File);
-
 	camera Cams;
 	std::vector<shapes> ShapeList;
 	std::vector<lights> LightList;
+	bool badCamera;
+	bool badLight;
+	bool badShape;
 };
 
 

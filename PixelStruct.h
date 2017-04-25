@@ -9,6 +9,9 @@ public:
 		double x;
 		double y;
 		uint rgb;
+		double r;
+		double g;
+		double b;
 	};
 	Pixall() {}
 	Pixall(double X, double Y, uint RGB) { 
