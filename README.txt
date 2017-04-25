@@ -54,3 +54,12 @@ CMakeFiles/Makefile2:148: recipe for target 'CMakeFiles/coverage.dir/rule' faile
 make[1]: *** [CMakeFiles/coverage.dir/rule] Error 2
 Makefile:155: recipe for target 'coverage' failed
 make: *** [coverage] Error 2
+so I am just going to move on and try to cover stuff manually and re-implement the planeIntersection
+
+5:41am
+I finished implementing my planeIntersect. I still have no idea why my scene0.png is so colorful. It looks like it has the 
+light amount correct, just the color placement is not right at all. My multithreading still likes to not work, which kinda sucks
+since I don't really know how to fix the issue I am running into. I will definitely be hitting up the office hours to get
+help with that. I also stopped making the unittests because they were working earlier (I created two json files to pass in
+and they would test specific things) but now they aren't being read in and they aparently don't exist anymore, even though
+they are in the same directory. Time to pray and pass out.

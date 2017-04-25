@@ -201,7 +201,35 @@ public:
 	}
 	void planeintersect(int i, std::vector<double> origin, std::vector<double> destination)
 	{
-
+		std::vector<double> ray{ destination[0] - origin[0], destination[1] - origin[1], destination[2] - origin[2] };
+		std::vector<double> normal{ inter.ShapeList[i].Shps.normal.x,inter.ShapeList[i].Shps.normal.y ,inter.ShapeList[i].Shps.normal.z };
+		double denom = dot_product(normal, ray);
+		if (fabs(denom) > 0.0001f)
+		{
+			std::vector<double> another{ inter.ShapeList[i].Shps.center.x - origin[0],inter.ShapeList[i].Shps.center.y - origin[1] ,inter.ShapeList[i].Shps.center.z - origin[2] };
+			double t = dot_product(another, normal) / denom;
+			double Rix, Riy, Riz;
+			if (t >= 0)
+			{
+				Rix = origin[0] + ray[0] * t;
+				Riy = origin[1] + ray[1] * t;
+				Riz = origin[2] + ray[2] * t;
+				if (!ShadowSearch)
+				{
+					pix.shadow.x = (Rix - inter.ShapeList[i].Shps.center.x);
+					pix.shadow.y = (Riy - inter.ShapeList[i].Shps.center.y);
+					pix.shadow.z = (Riz - inter.ShapeList[i].Shps.center.z);
+					ShadowSearch = true;
+					findshadow();
+				}
+				else
+				{
+					pix.shadow.collisions.push_back(true);
+				}
+			}
+			else
+				pix.shadow.collisions.push_back(false);
+		}
 	}
 	double dot_product(std::vector<double> one, std::vector<double> two)
 	{
@@ -214,25 +242,6 @@ public:
 	int pos;
 	bool ShadowSearch;
 	Pixall pix;
-};
-
-class Draw : public WorkBase
-{
-public:
-	void run() {
-		/*
-		 to set the colors for the pixels, use:
-		color = 4278190080 + (R*65536) + (G*256) + B;
-		*/
-	}
-
-	int get() {
-		return result;
-	}
-
-private:
-
-	int result;
 };
 
 #endif // !TSWIM_H
