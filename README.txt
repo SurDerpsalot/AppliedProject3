@@ -37,3 +37,20 @@ I pushed Beta4 at 2:14:18 am. Then everything disappeared in Visual Studio. So I
 get back to where I was before, but I guess that just overwrote everything I had done. I guess thats it then. Those two lines are going to make me have to withdraw.
 Everything saved except the math, you know THE CORE OF THE PROJECT.
  
+5:00am
+I managed to salvage the sphereIntersection, so that's nice. I am now attempting to fix all the build errors in the Vagrant.
+
+5:13am
+It now builds in the VM and now I am back to writing tests to get that percentage up.
+
+5:17am
+I tried to run the coverage report and I recieved the following error:
+No such file or directory
+CMakeFiles/coverage.dir/build.make:57: recipe for target 'CMakeFiles/coverage' failed
+make[3]: *** [CMakeFiles/coverage] Error 1
+CMakeFiles/Makefile2:141: recipe for target 'CMakeFiles/coverage.dir/all' failed
+make[2]: *** [CMakeFiles/coverage.dir/all] Error 2
+CMakeFiles/Makefile2:148: recipe for target 'CMakeFiles/coverage.dir/rule' failed
+make[1]: *** [CMakeFiles/coverage.dir/rule] Error 2
+Makefile:155: recipe for target 'coverage' failed
+make: *** [coverage] Error 2

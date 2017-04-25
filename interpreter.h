@@ -15,13 +15,13 @@ public:
 	
 	interpreter();
 
-	interpreter interpreter::fromJSON(QString File);
+	interpreter fromJSON(QString File);
 
-	interpreter & interpreter::operator=(const interpreter& s);
+	interpreter & operator=(const interpreter& s);
 	
-	bool interpreter::shapeParse(QJsonValue ShpArray);
-	bool interpreter::lightParse(QJsonValue LghtArray);
-	bool interpreter::cameraParse(QJsonValue CamJect);
+	bool shapeParse(QJsonValue ShpArray);
+	bool lightParse(QJsonValue LghtArray);
+	bool cameraParse(QJsonValue CamJect);
 
 	camera Cams;
 	std::vector<shapes> ShapeList;

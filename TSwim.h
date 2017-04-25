@@ -209,7 +209,7 @@ public:
 	}
 
 
-private:
+
 	interpreter inter;
 	int pos;
 	bool ShadowSearch;

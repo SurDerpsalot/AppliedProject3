@@ -13,6 +13,13 @@ public:
 		double g;
 		double b;
 	};
+	struct shadowStruct {
+		double x;
+		double y;
+		double z;
+		std::vector<bool> collisions;
+		std::string type;
+	};
 	Pixall() {}
 	Pixall(double X, double Y, uint RGB) { 
 		pip.x = X;
@@ -20,6 +27,7 @@ public:
 		pip.rgb = RGB;
 	}
 	PixStruct pip;
+	shadowStruct shadow;
 };
 
 
