@@ -20,7 +20,8 @@ QImage threadedDrawingandMath(int NT, interpreter interpret, QImage Picture) {
 		sizer--;
 		in.push(&w1);
 	}
-	for (int i = 0; i < NT; i++) {
+	for (int i = 0; i < NT; i++)
+	{
 		in.push(nullptr);
 	}
 	P.joinAll();
@@ -30,14 +31,16 @@ QImage threadedDrawingandMath(int NT, interpreter interpret, QImage Picture) {
 	while (!out.empty()) {
 		MessageType m;
 		out.wait_and_pop(m);
+
 		if (Calculate *rp = dynamic_cast<Calculate *>(m)) {
 			rVals.push_back(rp->pix.pip.r);
 			gVals.push_back(rp->pix.pip.g);
 			bVals.push_back(rp->pix.pip.b);
 			Calcs.push_back(*rp);
 		}
-		else
+		else {
 			std::cerr << "Error : Unknown Work Message Type!" << std::endl;
+		}
 	}
 	std::sort(rVals.begin(), rVals.end());
 	std::sort(gVals.begin(), gVals.end());
@@ -45,19 +48,16 @@ QImage threadedDrawingandMath(int NT, interpreter interpret, QImage Picture) {
 	double RSCALE = rVals.back();
 	double GSCALE = gVals.back();
 	double BSCALE = bVals.back();
-	double Rscale = 1;
-	double Gscale = 1;
-	double Bscale = 1;
-	if (RSCALE >255)
-		Rscale = RSCALE / 255;
-	if (GSCALE >255)
-		Gscale = GSCALE / 255;
-	if (BSCALE >255)
-		Bscale = BSCALE / 255;
-	for (size_t i = 0; i < Calcs.size(); i++) {
-		int newR = Calcs[i].pix.pip.r / Rscale;
-		int newG = Calcs[i].pix.pip.g / Gscale;
-		int newB = Calcs[i].pix.pip.b / Bscale;
+	std::vector<double> actual_scale{ RSCALE, GSCALE,BSCALE };
+	std::sort(actual_scale.begin(), actual_scale.end());
+	double scaler = 1;
+	if (actual_scale.back() >255)
+		scaler = actual_scale.back() / 255;
+	for (size_t i = 0; i < Calcs.size(); i++)
+	{
+		int newR = Calcs[i].pix.pip.r / scaler;
+		int newG = Calcs[i].pix.pip.g / scaler;
+		int newB = Calcs[i].pix.pip.b / scaler;
 		int x = Calcs[i].pix.pip.x;
 		int y = Calcs[i].pix.pip.y;
 		uint rgb = 4278190080 + (newR * 65536) + (newG * 256) + newB;
@@ -96,16 +96,19 @@ QImage SingleThread(interpreter interpret, QImage Picture)
 	double Rscaler = 1;
 	double Gscaler = 1;
 	double Bscaler = 1;
-	if (RSCALE > 255)
-		Rscaler = RSCALE/ 255;
-	if (GSCALE > 255)
-		Gscaler = RSCALE / 255;
-	if (BSCALE > 255)
-		Bscaler = RSCALE / 255;
-	for (size_t i = 0; i < Calcs.size(); i++) {
-		int newR = Calcs[i].pix.pip.r / Rscaler;
-		int newG = Calcs[i].pix.pip.g / Gscaler;
-		int newB = Calcs[i].pix.pip.b / Bscaler;
+	std::vector<double> actual_scale{ RSCALE, GSCALE,BSCALE };
+	std::sort(actual_scale.begin(), actual_scale.end());
+	double scaler = 1;
+	if (actual_scale.back() >255)
+		scaler = actual_scale.back() / 255;
+	if (RSCALE > 255) { Rscaler = RSCALE / 255; }
+	if (GSCALE > 255) { Gscaler = RSCALE / 255; }
+	if (BSCALE > 255) { Bscaler = RSCALE / 255; }
+	for (size_t i = 0; i < Calcs.size(); i++)
+	{
+		int newR = Calcs[i].pix.pip.r / scaler;
+		int newG = Calcs[i].pix.pip.g / scaler;
+		int newB = Calcs[i].pix.pip.b / scaler;
 		int x = Calcs[i].pix.pip.x;
 		int y = Calcs[i].pix.pip.y;
 		uint rgb = 4278190080 + (newR * (256 * 256)) + (newG * 256) + newB;

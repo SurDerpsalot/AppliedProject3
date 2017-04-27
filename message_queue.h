@@ -29,14 +29,16 @@ class message_queue
   bool try_pop(MessageType& popped_value)
   {
     std::lock_guard<std::mutex> lock(the_mutex);
+	bool out = true;
     if(the_queue.empty())
       {
-	return false;
+		out = false;
       }
-        
-    popped_value=the_queue.front();
-    the_queue.pop();
-    return true;
+	if (out = true) {
+		popped_value = the_queue.front();
+		the_queue.pop();
+	}
+    return out;
   }
 
   void wait_and_pop(MessageType& popped_value)

@@ -48,8 +48,8 @@ interpreter interpreter::fromJSON(QString File) {
 	return newinterpreter;
 }
 
-bool interpreter::lightParse(QJsonValue lghtArray) {
-	QJsonArray parser2 = lghtArray.toArray();
+bool interpreter::lightParse(QJsonValue LghtArray) {
+	QJsonArray parser2 = LghtArray.toArray();
 	int x = 0;
 	bool exit = true;
 	for (QJsonValue LightData : parser2){
@@ -90,7 +90,7 @@ bool interpreter::shapeParse(QJsonValue ShpArray) {
 		QJsonObject normal = ShapeObjs["normal"].toObject();
 		double radius = ShapeObjs["radius"].toDouble();
 		QJsonObject rgb = ShapeObjs["color"].toObject();
-		if ((0<= rgb["x"].toDouble() <= 255 )|| (0 <= rgb["y"].toDouble()<= 255 )||( 0<= rgb["z"].toDouble()<=255))	{
+		if ((-1< rgb["x"].toDouble() < 256 )|| (-1 < rgb["y"].toDouble()< 256 )||( -1< rgb["z"].toDouble()<256))	{
 			if (type == "sphere") {
 				std::string version = type.toStdString();
 				if (radius < 0) {
@@ -159,8 +159,7 @@ bool interpreter::cameraParse(QJsonValue CamJect) {
 
 interpreter & interpreter::operator=(const interpreter& s) {
 	// check for self-assignment
-	if (&s == this)
-		return *this;
+	if (&s == this) { return *this; }
 	Cams = s.Cams;
 	LightList = s.LightList;
 	ShapeList = s.ShapeList;

@@ -17,6 +17,7 @@ public:
 		double x;
 		double y;
 		double z;
+		int index;
 		std::vector<bool> collisions;
 		std::string type;
 	};
