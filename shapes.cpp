@@ -43,5 +43,5 @@ shapes::shapes(std::string version, QJsonObject middle, QJsonObject norm, QJsonO
 	Shps.normal.y = norm["y"].toDouble();
 	Shps.normal.z = norm["z"].toDouble();
 	Shps.type = version;
-	Shps.radius = 0;
+	Shps.radius = 1;
 }

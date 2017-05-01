@@ -45,6 +45,10 @@ interpreter interpreter::fromJSON(QString File) {
 		std::cerr << "Error : Camera, lights, or shapes are using incorrect format. " << std::endl;
 		throw error;
 	}
+	if (badShape || badLight || badCamera)
+	{
+		throw error;
+	}
 	return newinterpreter;
 }
 
@@ -90,7 +94,8 @@ bool interpreter::shapeParse(QJsonValue ShpArray) {
 		QJsonObject normal = ShapeObjs["normal"].toObject();
 		double radius = ShapeObjs["radius"].toDouble();
 		QJsonObject rgb = ShapeObjs["color"].toObject();
-		if ((-1< rgb["x"].toDouble() < 256 )|| (-1 < rgb["y"].toDouble()< 256 )||( -1< rgb["z"].toDouble()<256))	{
+		bool color = rgbchecker(rgb);
+		if (color)	{
 			if (type == "sphere") {
 				std::string version = type.toStdString();
 				if (radius < 0) {
@@ -111,7 +116,7 @@ bool interpreter::shapeParse(QJsonValue ShpArray) {
 			}
 		}
 		else	{
-			std::cerr << "Error : RGB Colors are not doubles" << std::endl;
+			std::cerr << "Error : RGB Colors are out of range" << std::endl;
 			exit = false;
 		}
 		x++;
@@ -157,6 +162,8 @@ bool interpreter::cameraParse(QJsonValue CamJect) {
 	return exit;
 }
 
+
+
 interpreter & interpreter::operator=(const interpreter& s) {
 	// check for self-assignment
 	if (&s == this) { return *this; }
@@ -167,4 +174,21 @@ interpreter & interpreter::operator=(const interpreter& s) {
 	badLight = s.badLight;
 	badShape = s.badShape;
 	return *this;
+}
+
+bool interpreter::rgbchecker(QJsonObject rgb) {
+	int red = rgb["r"].toInt();
+	int green = rgb["g"].toInt();
+	int blue = rgb["b"].toInt();
+	bool good = true;
+	if (red < 0 || red > 255) {
+		good = false;
+	}
+	if (green < 0 || green > 255) {
+		good = false;
+	}
+	if (blue < 0 || blue > 255) {
+		good = false;
+	}
+	return good;
 }

@@ -22,7 +22,7 @@ public:
 	bool shapeParse(QJsonValue ShpArray);
 	bool lightParse(QJsonValue LghtArray);
 	bool cameraParse(QJsonValue CamJect);
-
+	bool rgbchecker(QJsonObject rgb);
 	camera Cams;
 	std::vector<shapes> ShapeList;
 	std::vector<lights> LightList;

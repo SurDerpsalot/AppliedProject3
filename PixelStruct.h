@@ -21,7 +21,18 @@ public:
 		std::vector<bool> collisions;
 		std::string type;
 	};
-	Pixall() {}
+	Pixall() {
+		pip.x = 0;
+		pip.y = 0;
+		pip.r = 0;
+		pip.g = 0;
+		pip.b = 0;
+		pip.rgb = 0;
+		shadow.x = 0;
+		shadow.y = 0;
+		shadow.z = 0;
+		shadow.index = 0;
+	}
 	Pixall(double X, double Y, uint RGB) { 
 		pip.x = X;
 		pip.y = Y;

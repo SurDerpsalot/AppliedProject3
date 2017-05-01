@@ -4,6 +4,7 @@ camera::camera() {
 	CamStruct.center.x = 0;
 	CamStruct.center.y = 0;
 	CamStruct.center.z = 0;
+	CamStruct.normal.x = 0;
 	CamStruct.normal.y = 0;
 	CamStruct.normal.z = 0;
 	CamStruct.focus = 0;

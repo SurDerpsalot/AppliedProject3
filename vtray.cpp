@@ -5,29 +5,36 @@
 // implement vtray main here
 using std::cout;
 using std::endl;
-
+/*
 QImage threadedDrawingandMath(int NT, interpreter interpret, QImage Picture) {
 
 	std::vector<Calculate> Calcs;
-	MessageQueue in, out;
-	ThreadPool P(NT, &in, &out);
-	int CamSize = interpret.Cams.CamStruct.size[0] * interpret.Cams.CamStruct.size[1];
-	int sizer = CamSize;
-	for (int i = 0; i < CamSize; i++) {
-		Calculate w1(interpret, sizer);
-		w1.pix.pip.x = (sizer%interpret.Cams.CamStruct.size[0]);
-		w1.pix.pip.y = (sizer / interpret.Cams.CamStruct.size[0]);
-		sizer--;
-		in.push(&w1);
-	}
-	for (int i = 0; i < NT; i++)
-	{
-		in.push(nullptr);
-	}
-	P.joinAll();
 	std::vector<double> rVals;
 	std::vector<double> gVals;
 	std::vector<double> bVals;
+	MessageQueue in, out;
+	double scaler = 1;
+
+	//ThreadPool P(NT, &in, &out);
+
+	int CamSize = interpret.Cams.CamStruct.size[0] * interpret.Cams.CamStruct.size[1];
+	int sizer = CamSize;
+	int i = 0;
+	Calculate w1(interpret,0);
+	
+	for ( i = 0; i < CamSize; i++) {
+		w1.pos = i;
+		w1.pix.pip.x = (i % interpret.Cams.CamStruct.size[0]);
+		w1.pix.pip.y = (i / interpret.Cams.CamStruct.size[0]);
+		in.push(&w1);
+	}
+
+	for ( i = 0; i < NT; i++) {
+		in.push(nullptr);
+	}
+
+//	P.joinAll();
+
 	while (!out.empty()) {
 		MessageType m;
 		out.wait_and_pop(m);
@@ -38,23 +45,22 @@ QImage threadedDrawingandMath(int NT, interpreter interpret, QImage Picture) {
 			bVals.push_back(rp->pix.pip.b);
 			Calcs.push_back(*rp);
 		}
-		else {
-			std::cerr << "Error : Unknown Work Message Type!" << std::endl;
-		}
 	}
 	std::sort(rVals.begin(), rVals.end());
 	std::sort(gVals.begin(), gVals.end());
 	std::sort(bVals.begin(), bVals.end());
+
 	double RSCALE = rVals.back();
 	double GSCALE = gVals.back();
 	double BSCALE = bVals.back();
+	
 	std::vector<double> actual_scale{ RSCALE, GSCALE,BSCALE };
 	std::sort(actual_scale.begin(), actual_scale.end());
-	double scaler = 1;
+	
 	if (actual_scale.back() >255)
 		scaler = actual_scale.back() / 255;
-	for (size_t i = 0; i < Calcs.size(); i++)
-	{
+
+	for (size_t i = 0; i < Calcs.size(); i++)	{
 		int newR = Calcs[i].pix.pip.r / scaler;
 		int newG = Calcs[i].pix.pip.g / scaler;
 		int newB = Calcs[i].pix.pip.b / scaler;
@@ -63,9 +69,10 @@ QImage threadedDrawingandMath(int NT, interpreter interpret, QImage Picture) {
 		uint rgb = 4278190080 + (newR * 65536) + (newG * 256) + newB;
 		Picture.setPixel(x, y, rgb);
 	}
+
 	return Picture;
 }
-
+*/
 QImage SingleThread(interpreter interpret, QImage Picture)
 {
 	std::vector<Calculate> Calcs;
@@ -74,18 +81,18 @@ QImage SingleThread(interpreter interpret, QImage Picture)
 	std::vector<double> bVals;
 	double largest = 0;
 	int CamSize = interpret.Cams.CamStruct.size[0] * interpret.Cams.CamStruct.size[1];
-	int sizer = CamSize;
 	bool first = true;
 	for (int i = 0; i < CamSize; i++) {
-		Calculate w1(interpret, sizer);
+		Calculate w1(interpret, i);
 		w1.run();
-		sizer--;
-		w1.pix.pip.x = (sizer%interpret.Cams.CamStruct.size[0]);
-		w1.pix.pip.y = (sizer/ interpret.Cams.CamStruct.size[0]);
+		//std::cout << "why do you not like planes?" << std::endl;
+		w1.pix.pip.x = (i%interpret.Cams.CamStruct.size[0]);
+		w1.pix.pip.y = (i/ interpret.Cams.CamStruct.size[0]);
 		Calcs.push_back(w1);
 		rVals.push_back(w1.pix.pip.r);
 		gVals.push_back(w1.pix.pip.g);
 		bVals.push_back(w1.pix.pip.b);
+		//std::cout << i << std::endl;
 	}
 	std::sort(rVals.begin(), rVals.end());
 	std::sort(gVals.begin(), gVals.end());
@@ -131,15 +138,17 @@ int main(int argv, char * argc[]) {
 			inFile = argc[3];
 			tds = argc[2];
 			numThreads = tds.toInt();
-			try { interp = interp.fromJSON(inFile); }
+			try { 
+				interp = interp.fromJSON(inFile); 
+				QImage picture(interp.Cams.CamStruct.size[0], interp.Cams.CamStruct.size[1], QImage::Format_RGB32);
+				QString outFile = argc[4];
+				QFile out(outFile);
+				out.open(QIODevice::WriteOnly);
+				//picture = threadedDrawingandMath(numThreads, interp, picture);
+				picture = SingleThread(interp, picture);
+				picture.save(&out, "PNG", 100);
+			}
 			catch (QJsonParseError & error) { exit = EXIT_FAILURE; }
-			QImage picture(interp.Cams.CamStruct.size[0], interp.Cams.CamStruct.size[1], QImage::Format_RGB32);
-			QString outFile = argc[4];
-			QFile out(outFile);
-			out.open(QIODevice::WriteOnly);
-			picture = threadedDrawingandMath(numThreads, interp, picture);
-			picture.save(&out, "PNG", 100);
-
 		}
 		else {
 			std::cerr << "Error : Incorrect input arguments" << std::endl;
@@ -148,15 +157,16 @@ int main(int argv, char * argc[]) {
 	}
 	else if (argv == 3) {
 		inFile = argc[1];
-		try { interp = interp.fromJSON(inFile); }
+		try { 
+			interp = interp.fromJSON(inFile); 
+			QImage picture(interp.Cams.CamStruct.size[0], interp.Cams.CamStruct.size[1], QImage::Format_RGB32);
+			picture = SingleThread(interp, picture);
+			QString outFile = argc[2];
+			QFile out(outFile);
+			out.open(QIODevice::WriteOnly);
+			picture.save(&out, "PNG", 100);
+		}
 		catch (QJsonParseError & error) { exit = EXIT_FAILURE; }
-		QImage picture(interp.Cams.CamStruct.size[0], interp.Cams.CamStruct.size[1], QImage::Format_RGB32);
-		picture = SingleThread(interp, picture);
-		QString outFile = argc[2];
-		QFile out(outFile);
-		out.open(QIODevice::WriteOnly);
-
-		picture.save(&out, "PNG", 100);
 	}
 	else {
 		std::cerr << "Error : Incorrect number of input arguments" << std::endl;
