@@ -1,0 +1,85 @@
+{
+  "camera": {
+    "center": {
+      "x": "testing",
+      "y": 0,
+      "z": 0
+    },
+    "focus": "testing",
+    "normal": {
+      "x": 0,
+      "y": 0,
+      "z": "not a double"
+    },
+    "resolution": [
+      "test",
+      0.01
+    ],
+    "size": [
+      "spotify is great",
+      256
+    ]
+  },
+  "lights": [
+    {
+      "intensity": -1,
+      "location": {
+        "x": 5,
+        "y": -5,
+        "z": "dead"
+      }
+    }
+  ],
+  "objects": [
+    {
+      "center": {
+        "x": "jslkfjsdkf",
+        "y": 0,
+        "z": 5
+      },
+      "color": {
+        "b": 0,
+        "g": 280,
+        "r": 255
+      },
+      "lambert": 3,
+      "radius": -29,
+      "type": "spears"
+    },
+     {
+      "center": {
+        "x": "jslkfjsdkf",
+        "y": 0,
+        "z": 5
+      },
+      "color": {
+        "b": -20,
+        "g": 280,
+        "r": 295
+      },
+      "lambert": 3,
+      "radius": -29,
+      "type": "sphere"
+    },
+    {
+      "center": {
+        "x": "asfhaskjdf",
+        "y": 0,
+        "z": 3
+      },
+      "color": {
+        "b": 0,
+        "g": 280,
+        "r": 255
+      },
+      "lambert": -2,
+      "normal": {
+        "x": "dfkjslkjfksd",
+        "y": "dde",
+        "z": 0
+      },
+      "type": "plane"
+    }
+
+  ]
+}
