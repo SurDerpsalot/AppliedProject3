@@ -18,17 +18,11 @@ shapes : This class is really just three structs that hold all the information n
 
 message_queue: This is the threadsafe queue from the example code. It holds a queue of operations to be completed by the threadpool.
 
-TSwim : This is the threadpool.It creates a class per pixel and passes every class into a vector. That vector then feeds the classes to threads to be ran. The threads are set up ahead
-		of time so they don't take long to set up for each call (and there will be many calls). It also contains the class CALCULATE that does all the
-		math for finding the closest shape to the camera and setting that pixel with that color, and then calculate the shadows that will be cast onto the pixel. The results
-		are stored in a struct called 'pix' for usage in the vtray.cpp.
+TSwim : This is the calculation class that contains a threadpool. It runs per pixel, and when a multithreaded environment is created, creates a threadpool and runs each pixel through
+		a thread. Currently dies every time I try to run Scene1 or Scene2. This class finds the base RGB values for each pixel and passes them all out after all the pixels were run.
+		vtray.cpp deals with the exposure.
 
 PixelStruct : This is the instantiaion and creation of the pixel struct, which holds all the information about the pixels being used. It stores the information about the
 		shadows impacting the pixel as well as the pixel length and color. The information about shadows includes the location of the intersection between the
 		camera ray and the shape. It also includes a vector of potential intersections with the any of the shapes in the ShapeList while the ray is between 
 		the camera ray and shape intersection and any of the lightsources in the LightsList.
-
-
-Removed the implementation of the threadpool. It wasn't functioning properly and I wanted to focus on fixing one thing at a time.
-It has been extremely frustrating, since VisualStudio has been removing my files and replacing them with older files from previous days and then not accepting the files
-that I had to re-download from github. All around, not been a fun time, but I did what I could.

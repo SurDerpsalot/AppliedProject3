@@ -120,7 +120,7 @@ TEST_CASE("Test the Calculate class", "[TSwim]")
 		QString tester = "/vagrant/unttests/Test2.json";
 		interpreter interp;
 		interp = interp.fromJSON(tester);
-		Calculate Calc(interp, 65536);
+		Calculate Calc(interp, 65536, 1);
 		Calc.run();
 		REQUIRE(Calc.pix.pip.r == 0);
 		REQUIRE(Calc.pix.pip.g == 0); 
@@ -130,10 +130,10 @@ TEST_CASE("Test the Calculate class", "[TSwim]")
 		QString tester = "/vagrant/unttests/Test2.json";
 		interpreter interp;
 		interp = interp.fromJSON(tester);
-		Calculate Calc(interp, 24755);
+		Calculate Calc(interp, 24755,1);
 		tester = "/vagrant/unttests/Test3.json";
 		interp = interp.fromJSON(tester);
-		Calculate Calc2(interp, 65536);
+		Calculate Calc2(interp, 65536,1);
 		REQUIRE_NOTHROW(Calc.run());
 		REQUIRE_NOTHROW(Calc2.run());
 		REQUIRE(Calc.inter.ShapeList.size() == 1);
@@ -151,12 +151,31 @@ TEST_CASE("Testing the threadsafe queue", "[message_queue]")
 	int three = 3;
 	bool good = false;
 	int hold;
+	Calculate calc;
 	REQUIRE(tester.empty());
 	tester.push(one);
 	tester.push(two);
-	tester.push(three);
+	tester.push(calc.pix.pip.r);
 	tester.try_pop(hold);
 	REQUIRE(hold == one);
 	tester.wait_and_pop(hold);
 	REQUIRE(hold == two);
+}
+
+TEST_CASE("Testing the thread fucntion", "[TSwim]")
+{
+	QString tester = "/vagrant/unttests/Test2.json";
+	interpreter interp;
+	interp = interp.fromJSON(tester);
+	Calculate calc(interp, 0, 2);
+	calc.in.push(1);
+	calc.in.push(3000);
+	calc.in.push(50000);
+	calc.in.push(-392);
+	Pixall p;
+	calc.thread_func();
+	calc.out.try_pop(p);
+	calc.out.try_pop(p);
+	calc.out.try_pop(p);
+	REQUIRE(p.pip.loc == 50000);
 }

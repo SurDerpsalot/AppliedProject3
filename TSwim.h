@@ -12,22 +12,13 @@
 #include <PixelStruct.h>
 #include <interpreter.h>
 
-//Basic work class
-class WorkBase
-{
-public:
-	virtual void run() = 0;
-};
-
-// make the message a WorkBase pointer
-typedef WorkBase * MessageType;
-typedef message_queue<MessageType> MessageQueue;
-
-// now create a work units
+typedef message_queue<int> MessIn;
+typedef message_queue<Pixall> MessOut;
 class Calculate
 {
 public:
-	Calculate(interpreter interp, int position);
+	Calculate(interpreter interp, int position, int nT);
+	Calculate();
 
 	void run();
 
@@ -35,14 +26,27 @@ public:
 	void planeintersect(int i, std::vector<double> origin, std::vector<double> destination);
 
 	void findshadow(int w);
-
+	void thread_func();
 	double dot_product(std::vector<double> one, std::vector<double> two);
 	void checkShadow(std::vector<double> intersect, std::vector<double> start, int i);
+	
+	void ThreadPool(int n);
 
+	void joinAll();
+	mutable std::mutex the_mutex;
+	std::vector<std::thread> pool;
+
+	MessIn in;
+	MessOut out;
 	int pos;
+	int numThreads;
 	interpreter inter;
 	bool ShadowSearch;
 	Pixall pix;
 };
+
+	
+
+	
 
 #endif // !TSWIM_H

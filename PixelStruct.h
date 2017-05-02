@@ -12,6 +12,7 @@ public:
 		double r;
 		double g;
 		double b;
+		double loc;
 	};
 	struct shadowStruct {
 		double x;

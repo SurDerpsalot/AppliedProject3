@@ -1,15 +1,28 @@
 #include <TSwim.h>	
 
-Calculate::Calculate(interpreter interp, int position) {
+Calculate::Calculate(interpreter interp, int position, int nT) {
 		inter = interp;
 		pos = position;
+		pix.pip.loc = position;
 		ShadowSearch = false;
 		pix.pip.r = 0;
 		pix.pip.g = 0;
 		pix.pip.b = 0;
 		pix.shadow.hit = "no hit";
 		pix.shadow.type = "neither";
+		numThreads = nT;
 	}
+
+Calculate::Calculate() {
+	pos = 0;
+	ShadowSearch = false;
+	pix.pip.r = 0;
+	pix.pip.g = 0;
+	pix.pip.b = 0;
+	pix.shadow.hit = "no hit";
+	pix.shadow.type = "neither";
+	numThreads = 1;
+}
 
 	void Calculate::run() {
 		std::vector<double> screen;
@@ -185,4 +198,36 @@ Calculate::Calculate(interpreter interp, int position) {
 				ShadowSearch = true;
 				findshadow(i);
 			}
+	}
+	
+	void Calculate::ThreadPool(int n) {
+		for (int i = 0; i < n; ++i) {
+			pool.emplace_back(std::thread(&Calculate::thread_func, this));
+		}
+	}
+
+	void Calculate::joinAll() {
+		for (auto &t : pool) t.join();
+	}
+	
+	void Calculate::thread_func() {
+		while (true) {
+			std::lock_guard<std::mutex> lock(the_mutex);
+			int i;
+			in.wait_and_pop(i);
+			if (i < 0) { break; }
+			pix.shadow.hit = "no hit";
+			pix.pip.x = (i % inter.Cams.CamStruct.size[0]);
+			pix.pip.y = (i / inter.Cams.CamStruct.size[0]);
+			pos = i;
+			pix.pip.loc = i;
+			ShadowSearch = false;
+			pix.pip.r = 0;
+			pix.pip.g = 0;
+			pix.pip.b = 0;
+			pix.shadow.hit = "no hit";
+			pix.shadow.type = "neither";
+			run();
+			out.push(pix);
+		}
 	}
