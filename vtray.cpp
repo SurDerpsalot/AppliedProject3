@@ -75,7 +75,7 @@ QImage threadedDrawingandMath(int NT, interpreter interpret, QImage Picture) {
 */
 QImage SingleThread(interpreter interpret, QImage Picture)
 {
-	std::vector<Calculate> Calcs;
+	std::vector<Pixall> Calcs;
 	std::vector<double> rVals;
 	std::vector<double> gVals;
 	std::vector<double> bVals;
@@ -85,10 +85,9 @@ QImage SingleThread(interpreter interpret, QImage Picture)
 	for (int i = 0; i < CamSize; i++) {
 		Calculate w1(interpret, i);
 		w1.run();
-		//std::cout << "why do you not like planes?" << std::endl;
 		w1.pix.pip.x = (i%interpret.Cams.CamStruct.size[0]);
 		w1.pix.pip.y = (i/ interpret.Cams.CamStruct.size[0]);
-		Calcs.push_back(w1);
+		Calcs.push_back(w1.pix);
 		rVals.push_back(w1.pix.pip.r);
 		gVals.push_back(w1.pix.pip.g);
 		bVals.push_back(w1.pix.pip.b);
@@ -113,11 +112,11 @@ QImage SingleThread(interpreter interpret, QImage Picture)
 	if (BSCALE > 255) { Bscaler = RSCALE / 255; }
 	for (size_t i = 0; i < Calcs.size(); i++)
 	{
-		int newR = Calcs[i].pix.pip.r / scaler;
-		int newG = Calcs[i].pix.pip.g / scaler;
-		int newB = Calcs[i].pix.pip.b / scaler;
-		int x = Calcs[i].pix.pip.x;
-		int y = Calcs[i].pix.pip.y;
+		int newR = Calcs[i].pip.r / Rscaler;
+		int newG = Calcs[i].pip.g / Gscaler;
+		int newB = Calcs[i].pip.b / Bscaler;
+		int x = Calcs[i].pip.x;
+		int y = Calcs[i].pip.y;
 		uint rgb = 4278190080 + (newR * (256 * 256)) + (newG * 256) + newB;
 		Picture.setPixel(x, y, rgb);
 	}

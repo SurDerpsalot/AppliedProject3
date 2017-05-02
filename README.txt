@@ -28,38 +28,7 @@ PixelStruct : This is the instantiaion and creation of the pixel struct, which h
 		camera ray and the shape. It also includes a vector of potential intersections with the any of the shapes in the ShapeList while the ray is between 
 		the camera ray and shape intersection and any of the lightsources in the LightsList.
 
-I decided on this design because it was supposed to help isolate bugs. However, with this current iteration of the program, the math should be fine but yet the colors are
-coming out incorrect. In addition to that, scene1 and scene2 don't even work because I need to manage the resources better so I don't overflow the vectors. I would implement
-that, but right now (2:32 am) I am more worried about getting any point that I can so my first priority right now is to get a test coverage higher than 80%.
 
-and just like that(4:04am) Everything is gone. apparently my latest update is 10 hours even though I UPDATED BETA4 AT 2:14 AM!!!!! I have my log state that
-I pushed Beta4 at 2:14:18 am. Then everything disappeared in Visual Studio. So I did git push origin Beta2 so I could go back. Then I did git push origin Beta4 so that I could
-get back to where I was before, but I guess that just overwrote everything I had done. I guess thats it then. Those two lines are going to make me have to withdraw.
-Everything saved except the math, you know THE CORE OF THE PROJECT.
- 
-5:00am
-I managed to salvage the sphereIntersection, so that's nice. I am now attempting to fix all the build errors in the Vagrant.
-
-5:13am
-It now builds in the VM and now I am back to writing tests to get that percentage up.
-
-5:17am
-I tried to run the coverage report and I recieved the following error:
-No such file or directory
-CMakeFiles/coverage.dir/build.make:57: recipe for target 'CMakeFiles/coverage' failed
-make[3]: *** [CMakeFiles/coverage] Error 1
-CMakeFiles/Makefile2:141: recipe for target 'CMakeFiles/coverage.dir/all' failed
-make[2]: *** [CMakeFiles/coverage.dir/all] Error 2
-CMakeFiles/Makefile2:148: recipe for target 'CMakeFiles/coverage.dir/rule' failed
-make[1]: *** [CMakeFiles/coverage.dir/rule] Error 2
-Makefile:155: recipe for target 'coverage' failed
-make: *** [coverage] Error 2
-so I am just going to move on and try to cover stuff manually and re-implement the planeIntersection
-
-5:41am
-I finished implementing my planeIntersect. I still have no idea why my scene0.png is so colorful. It looks like it has the 
-light amount correct, just the color placement is not right at all. My multithreading still likes to not work, which kinda sucks
-since I don't really know how to fix the issue I am running into. I will definitely be hitting up the office hours to get
-help with that. I also stopped making the unittests because they were working earlier (I created two json files to pass in
-and they would test specific things) but now they aren't being read in and they aparently don't exist anymore, even though
-they are in the same directory. Time to pray and pass out.
+Removed the implementation of the threadpool. It wasn't functioning properly and I wanted to focus on fixing one thing at a time.
+It has been extremely frustrating, since VisualStudio has been removing my files and replacing them with older files from previous days and then not accepting the files
+that I had to re-download from github. All around, not been a fun time, but I did what I could.

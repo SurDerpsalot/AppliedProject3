@@ -14,7 +14,7 @@ find_package(Qt5 COMPONENTS Gui REQUIRED)
 # EDIT: add your (non-test) source files to this list
 set(src camera.h camera.cpp interpreter.h interpreter.cpp
 	lights.h lights.cpp shapes.h shapes.cpp message_queue.h
-	PixelStruct.h TSwim.h
+	PixelStruct.h TSwim.h TSwim.cpp
   
   )
 

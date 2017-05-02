@@ -20,6 +20,7 @@ public:
 		int index;
 		std::vector<bool> collisions;
 		std::string type;
+		std::string hit;
 	};
 	Pixall() {
 		pip.x = 0;

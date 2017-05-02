@@ -34,7 +34,7 @@ public:
 	void sphereintersect(int i, std::vector<double> origin, std::vector<double> destination);
 	void planeintersect(int i, std::vector<double> origin, std::vector<double> destination);
 
-	void findshadow(int i);
+	void findshadow(int w);
 
 	double dot_product(std::vector<double> one, std::vector<double> two);
 

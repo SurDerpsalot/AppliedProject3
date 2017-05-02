@@ -7,6 +7,8 @@ Calculate::Calculate(interpreter interp, int position) {
 		pix.pip.r = 0;
 		pix.pip.g = 0;
 		pix.pip.b = 0;
+		pix.shadow.type = "no hit";
+		pix.shadow.type = "neither";
 	}
 
 	void Calculate::run() {
@@ -31,7 +33,6 @@ Calculate::Calculate(interpreter interp, int position) {
 			}
 			else
 			{
-				//		std::cout << "what does segmentation fault even mean" << std::endl;
 				planeintersect(i, screen, focal);
 			}
 		}
@@ -78,7 +79,8 @@ Calculate::Calculate(interpreter interp, int position) {
 					pix.shadow.x = (Rix);// -sx) / rad;
 					pix.shadow.y = (Riy);// -sy) / rad;
 					pix.shadow.z = (Riz);// -sz) / rad;
-					pix.shadow.type = "hit";
+					pix.shadow.hit = "hit";
+					pix.shadow.type = "sphere";
 					pix.shadow.index = i;
 					ShadowSearch = true;
 					findshadow(i);
@@ -89,17 +91,18 @@ Calculate::Calculate(interpreter interp, int position) {
 					std::vector<double> distNew{ Rix - origin[0], pix.shadow.y - origin[1], pix.shadow.z - origin[2] };
 					int old = 0;
 					int notold = 0;
-					if (distOld[0] > distNew[0]) { old++; }
+					if (distOld[0] < distNew[0]) { old++; }
 					else { notold++; }
-					if (distOld[1] > distNew[1]) { old++; }
+					if (distOld[1] < distNew[1]) { old++; }
 					else { notold++; }
-					if (distOld[2] > distNew[2]) { old++; }
+					if (distOld[2] < distNew[2]) { old++; }
 					else { notold++; }
 					if (notold > old) {
 						pix.shadow.x = Rix;
 						pix.shadow.y = Riy;
 						pix.shadow.z = Riz;
 						pix.shadow.index = i;
+						pix.shadow.type = "sphere";
 						ShadowSearch = true;
 						findshadow(i);
 					}
@@ -110,8 +113,6 @@ Calculate::Calculate(interpreter interp, int position) {
 		else {
 			if (ShadowSearch)
 				pix.shadow.collisions.push_back(false);
-			else
-				pix.shadow.type = "no hit";
 		}
 	}
 
@@ -134,11 +135,12 @@ Calculate::Calculate(interpreter interp, int position) {
 				Riz = origin[2] + ray[2] * t;
 					if (!ShadowSearch)
 					{
-						if (pix.shadow.type == "no hit") {
+						if (pix.shadow.hit == "no hit") {
 							pix.shadow.x = (Rix);
 							pix.shadow.y = (Riy);
 							pix.shadow.z = (Riz);
-							pix.shadow.type = "hit";
+							pix.shadow.hit = "hit";
+							pix.shadow.type = "plane";
 							pix.shadow.index = i;
 							ShadowSearch = true;
 							findshadow(i);
@@ -149,17 +151,18 @@ Calculate::Calculate(interpreter interp, int position) {
 							std::vector<double> distNew{Rix-origin[0], pix.shadow.y - origin[1], pix.shadow.z - origin[2]};
 							int old = 0;
 							int notold = 0;
-							if (distOld[0] > distNew[0]) {	old++;	}
+							if (distOld[0] < distNew[0]) {	old++;	}
 							else { notold++; }
-							if (distOld[1] > distNew[1]) { old++; }
+							if (distOld[1] < distNew[1]) { old++; }
 							else { notold++; }
-							if (distOld[2] > distNew[2]) { old++; }
+							if (distOld[2] < distNew[2]) { old++; }
 							else { notold++; }
 							if (notold > old)	{
 								pix.shadow.x = Rix;
 								pix.shadow.y = Riy;
 								pix.shadow.z = Riz;
 								pix.shadow.index = i;
+								pix.shadow.type = "plane";
 								ShadowSearch = true;
 								findshadow(i);
 							}
@@ -172,23 +175,21 @@ Calculate::Calculate(interpreter interp, int position) {
 			}
 			else
 			{
-				if (ShadowSearch)
+				if (ShadowSearch) {
 					pix.shadow.collisions.push_back(false);
-				else
-					pix.shadow.type = "no hit";
+				}
 			}
 
 		}
 		else
 		{
-			if (ShadowSearch)
+			if (ShadowSearch) {
 				pix.shadow.collisions.push_back(false);
-			else
-				pix.shadow.type = "no hit";
+			}
 		}
 	}
 
-	void Calculate::findshadow(int i)
+	void Calculate::findshadow(int w)
 	{
 		std::vector<double> origin;
 		std::vector<double> dest;
@@ -196,9 +197,14 @@ Calculate::Calculate(interpreter interp, int position) {
 		double nx = 0;
 		double ny = 0;
 		double nz = 0;
-		origin.push_back((pix.shadow.x - inter.ShapeList[i].Shps.center.x) / inter.ShapeList[i].Shps.radius);
-		origin.push_back((pix.shadow.y - inter.ShapeList[i].Shps.center.y) / inter.ShapeList[i].Shps.radius);
-		origin.push_back((pix.shadow.z - inter.ShapeList[i].Shps.center.z) / inter.ShapeList[i].Shps.radius);
+		origin.push_back((pix.shadow.x - inter.ShapeList[w].Shps.center.x) / inter.ShapeList[w].Shps.radius);
+		origin.push_back((pix.shadow.y - inter.ShapeList[w].Shps.center.y) / inter.ShapeList[w].Shps.radius);
+		origin.push_back((pix.shadow.z - inter.ShapeList[w].Shps.center.z) / inter.ShapeList[w].Shps.radius);
+		if (inter.ShapeList[w].Shps.type == "plane") {
+			origin[0] = pix.shadow.x - inter.ShapeList[w].Shps.center.x;
+			origin[1] = pix.shadow.y - inter.ShapeList[w].Shps.center.y;
+			origin[2] = pix.shadow.z - inter.ShapeList[w].Shps.center.z;
+		}
 		for (size_t j = 0; j < inter.LightList.size(); j++)
 		{
 			dest.push_back(inter.LightList[j].lite.location.x);
@@ -208,32 +214,44 @@ Calculate::Calculate(interpreter interp, int position) {
 			{
 				if (inter.ShapeList[i].Shps.type == "sphere")
 				{
-					sphereintersect(i, dest, origin);
+					sphereintersect(i, origin, dest);
+					if (pix.shadow.collisions.back())
+					{
+						pix.shadow.collisions.pop_back();
+						pix.pip.r = pix.pip.r + 0;
+						pix.pip.g = pix.pip.g + 0;
+						pix.pip.b = pix.pip.b + 0;
+					}
+					else
+					{
+						if (pix.shadow.type == "sphere") {
+							pix.shadow.collisions.pop_back();
+							nx = (origin[0] - inter.ShapeList[i].Shps.center.x) / inter.ShapeList[i].Shps.radius;
+							ny = (origin[1] - inter.ShapeList[i].Shps.center.y) / inter.ShapeList[i].Shps.radius;
+							nz = (origin[2] - inter.ShapeList[i].Shps.center.y) / inter.ShapeList[i].Shps.radius;
+						}
+					}
 				}
 				else
 				{
 					planeintersect(i, dest, origin);
-				}
-				if (pix.shadow.collisions.back())
-				{
-					pix.shadow.collisions.pop_back();
-					pix.pip.r = pix.pip.r + 0;
-					pix.pip.g = pix.pip.g + 0;
-					pix.pip.b = pix.pip.b + 0;
-				}
-				else
-				{
-					pix.shadow.collisions.pop_back();
-					if (inter.ShapeList[i].Shps.type == "sphere") {
-						nx = (origin[0] - inter.ShapeList[i].Shps.center.x) / inter.ShapeList[i].Shps.radius;
-						ny = (origin[1] - inter.ShapeList[i].Shps.center.y) / inter.ShapeList[i].Shps.radius;
-						nz = (origin[2] - inter.ShapeList[i].Shps.center.y) / inter.ShapeList[i].Shps.radius;
+					if (pix.shadow.collisions.back())
+					{
+						pix.shadow.collisions.pop_back();
+						pix.pip.r = pix.pip.r + 0;
+						pix.pip.g = pix.pip.g + 0;
+						pix.pip.b = pix.pip.b + 0;
 					}
-					else {
-						nx = inter.ShapeList[i].Shps.normal.x;
-						ny = inter.ShapeList[i].Shps.normal.y;
-						nz = inter.ShapeList[i].Shps.normal.z;
+					else
+					{
+						if (pix.shadow.type == "plane") {
+							pix.shadow.collisions.pop_back();
+							nx = origin[0] - inter.ShapeList[i].Shps.center.x;
+							ny = origin[1] - inter.ShapeList[i].Shps.center.y;
+							nz = origin[2] - inter.ShapeList[i].Shps.center.z;
+						}
 					}
+				}
 					std::vector<double> Normal{ nx,ny,nz };
 					std::vector<double> shadow{ dest[0] - pix.shadow.x,dest[1] - pix.shadow.y,dest[2] - pix.shadow.z };
 					scale = dot_product(Normal, shadow) * inter.ShapeList[i].Shps.lambert;
@@ -241,10 +259,9 @@ Calculate::Calculate(interpreter interp, int position) {
 					pix.pip.r = pix.pip.r + (scale *inter.LightList[j].lite.intensity * inter.ShapeList[i].Shps.color.r);
 					pix.pip.g = pix.pip.g + (scale *inter.LightList[j].lite.intensity * inter.ShapeList[i].Shps.color.g);
 					pix.pip.b = pix.pip.b + (scale *inter.LightList[j].lite.intensity * inter.ShapeList[i].Shps.color.b);
-				}
 			}
 		}
-	}
+}
 
 	double Calculate::dot_product(std::vector<double> one, std::vector<double> two)
 	{
