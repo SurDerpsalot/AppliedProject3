@@ -37,6 +37,7 @@ public:
 	void findshadow(int w);
 
 	double dot_product(std::vector<double> one, std::vector<double> two);
+	void checkShadow(std::vector<double> intersect, std::vector<double> start, int i);
 
 	int pos;
 	interpreter inter;

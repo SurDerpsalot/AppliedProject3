@@ -127,7 +127,6 @@ TEST_CASE("Test the Calculate class", "[TSwim]")
 		REQUIRE(Calc.pix.pip.b == 0);
 	}
 	{
-		//test that spheres run smoothly
 		QString tester = "/vagrant/unttests/Test2.json";
 		interpreter interp;
 		interp = interp.fromJSON(tester);
@@ -137,10 +136,10 @@ TEST_CASE("Test the Calculate class", "[TSwim]")
 		Calculate Calc2(interp, 65536);
 		REQUIRE_NOTHROW(Calc.run());
 		REQUIRE_NOTHROW(Calc2.run());
-		REQUIRE(Calc2.pix.pip.r == 0);
-		REQUIRE(Calc2.pix.pip.g == 0);
-		REQUIRE(Calc2.pix.pip.b == 0);
-
+		REQUIRE(Calc.inter.ShapeList.size() == 1);
+		REQUIRE(Calc2.inter.ShapeList.size() == 2);
+		REQUIRE(Calc2.inter.ShapeList[0].Shps.type == "sphere");
+		REQUIRE(Calc2.inter.ShapeList[1].Shps.type == "plane");
 	}
 }
 

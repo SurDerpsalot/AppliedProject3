@@ -7,7 +7,7 @@ Calculate::Calculate(interpreter interp, int position) {
 		pix.pip.r = 0;
 		pix.pip.g = 0;
 		pix.pip.b = 0;
-		pix.shadow.type = "no hit";
+		pix.shadow.hit = "no hit";
 		pix.shadow.type = "neither";
 	}
 
@@ -68,34 +68,11 @@ Calculate::Calculate(interpreter interp, int position) {
 					Rix = ox + xd*T0;
 					Riy = oy + yd*T0;
 					Riz = oz + zd*T0;}
-				if (pix.shadow.type == "no hit"){
-					pix.shadow.x = (Rix);// -sx) / rad;
-					pix.shadow.y = (Riy);// -sy) / rad;
-					pix.shadow.z = (Riz);// -sz) / rad;
-					pix.shadow.hit = "hit";
-					pix.shadow.type = "sphere";
-					pix.shadow.index = i;
-					ShadowSearch = true;
-					findshadow(i);}
-				else {
-					std::vector<double> distOld{ pix.shadow.x - origin[0], pix.shadow.y - origin[1], pix.shadow.z - origin[2] };
-					std::vector<double> distNew{ Rix - origin[0], pix.shadow.y - origin[1], pix.shadow.z - origin[2] };
-					int old = 0;
-					int notold = 0;
-					if (distOld[0] < distNew[0]) { old++; }
-					else { notold++; }
-					if (distOld[1] < distNew[1]) { old++; }
-					else { notold++; }
-					if (distOld[2] < distNew[2]) { old++; }
-					else { notold++; }
-					if (notold > old) {
-						pix.shadow.x = Rix;
-						pix.shadow.y = Riy;
-						pix.shadow.z = Riz;
-						pix.shadow.index = i;
-						pix.shadow.type = "sphere";
-						ShadowSearch = true;
-						findshadow(i);}}}
+				std::vector<double> intersect{ Rix,Riy,Riz };
+				checkShadow(intersect, origin, i);
+				ShadowSearch = true;
+				findshadow(i);
+			}
 			else { pix.shadow.collisions.push_back(true); }}
 		else {if (ShadowSearch) { pix.shadow.collisions.push_back(false); }}}
 
@@ -113,34 +90,11 @@ Calculate::Calculate(interpreter interp, int position) {
 				Riy = origin[1] + ray[1] * t;
 				Riz = origin[2] + ray[2] * t;
 					if (!ShadowSearch){
-						if (pix.shadow.hit == "no hit") {
-							pix.shadow.x = (Rix);
-							pix.shadow.y = (Riy);
-							pix.shadow.z = (Riz);
-							pix.shadow.hit = "hit";
-							pix.shadow.type = "plane";
-							pix.shadow.index = i;
-							ShadowSearch = true;
-							findshadow(i);}
-						else{
-							std::vector<double> distOld{pix.shadow.x - origin[0], pix.shadow.y - origin[1], pix.shadow.z - origin[2]};
-							std::vector<double> distNew{Rix-origin[0], pix.shadow.y - origin[1], pix.shadow.z - origin[2]};
-							int old = 0;
-							int notold = 0;
-							if (distOld[0] < distNew[0]) {	old++;	}
-							else { notold++; }
-							if (distOld[1] < distNew[1]) { old++; }
-							else { notold++; }
-							if (distOld[2] < distNew[2]) { old++; }
-							else { notold++; }
-							if (notold > old)	{
-								pix.shadow.x = Rix;
-								pix.shadow.y = Riy;
-								pix.shadow.z = Riz;
-								pix.shadow.index = i;
-								pix.shadow.type = "plane";
-								ShadowSearch = true;
-								findshadow(i);}}}
+						std::vector<double> intersec{ Rix,Riy,Riz };
+						checkShadow(intersec,origin,i);
+						ShadowSearch = true;
+						findshadow(i);
+						}
 					else{ pix.shadow.collisions.push_back(true); }
 			}
 			else {
@@ -212,4 +166,23 @@ Calculate::Calculate(interpreter interp, int position) {
 	{
 		double dotout = one[0] * two[0] + one[1] * two[1] + one[2] * two[2];
 		return dotout;
+	}
+
+	void Calculate::checkShadow(std::vector<double> intersect, std::vector<double> start,int i) {
+			std::vector<double> distOld{ pix.shadow.x - start[0], pix.shadow.y - start[1], pix.shadow.z - start[2] };
+			std::vector<double> distNew{ intersect[0] - start[0], pix.shadow.y - start[1], pix.shadow.z - start[2] };
+			int old = 0;
+			int notold = 0;
+			old = distOld[0] + distOld[1] + distOld[2];
+			notold = distNew[0] + distNew[1] + distNew[2];
+			if (notold < old || pix.shadow.hit == "no hit") {
+				pix.shadow.x = intersect[0];
+				pix.shadow.y = intersect[1];
+				pix.shadow.z = intersect[2];
+				pix.shadow.hit = "hit";
+				pix.shadow.index = i;
+				pix.shadow.type = inter.ShapeList[i].Shps.type;
+				ShadowSearch = true;
+				findshadow(i);
+			}
 	}
